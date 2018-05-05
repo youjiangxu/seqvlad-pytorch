@@ -4,10 +4,9 @@
 
 This is an implementation of Sequential VLAD (SeqVLAD) in PyTorch.
 
-**Note 1**: always use `git clone --recursive https://github.com/youjiangxu/seqvlad-pytorch` to clone this project.
+**Note**: always use `git clone --recursive https://github.com/youjiangxu/seqvlad-pytorch` to clone this project.
 Otherwise you will not be able to use the inception series CNN archs.
 
-**Note 2**: We first build our SeqVLAD on the repository of [old-seqvlad-pytorch](https://github.com/youjiangxu/tsn-pytorch/tree/seqvlad), which is folked from [tsn-pytorch](https://github.com/yjxiong/tsn-pytorch). And in order to reproduct our method easily, we release the source code in this repository [SeqVLAD-Pytorch](https://github.com/youjiangxu/seqvlad-pytorch).
 
 ## Training
 
@@ -108,7 +107,8 @@ python test_models.py ucf101 Flow ./data/ucf101_splits/flow/test_split${split}.t
        --flow_pref flow_
 ```
 
+**Note**: We first build our SeqVLAD on the repository of [old-seqvlad-pytorch](https://github.com/youjiangxu/tsn-pytorch/tree/seqvlad), which is folked from [tsn-pytorch](https://github.com/yjxiong/tsn-pytorch). And in order to reproduct our method easily, we release the source code in this repository [SeqVLAD-Pytorch](https://github.com/youjiangxu/seqvlad-pytorch).
 
-### useful links
+### Useful Links
 - [tsn-pytorch](https://github.com/yjxiong/tsn-pytorch)
 - [tsn-caffe](https://github.com/yjxiong/temporal-segment-networks)
