@@ -78,7 +78,7 @@ python /mnt/lustre/xuyoujiang/action/seqvlad-pytorch/main.py ucf101 Flow ./data/
 
 ### TSN Pretrained Model
 
-**For the Flow stream, we utilize the tsn pretrained model to initialize our model.** Thus, we release the pretrained tsn models to easily reprodct our method. The pretrained models are released as follows: (the model is reimplement by us, not official model. But the performance is comparable.)
+**For the Flow stream, we utilize the tsn pretrained model to initialize our model.** Thus, we release the pretrained tsn models to reproduct our method easily. The pretrained models are released as follows: (the model is reimplement by us, not official model. But the performance is comparable.)
 
 | Model  | Modality | Split | Link                                                         |
 | ------ | -------- | ----- | ------------------------------------------------------------ |
