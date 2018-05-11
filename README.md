@@ -68,7 +68,7 @@ python /mnt/lustre/xuyoujiang/action/seqvlad-pytorch/main.py hmdb51 Flow ./data/
    --gd 20 --lr ${lr} --lr_steps ${first_step} ${second_step} --epochs ${total_epoch} \
    -b 64 -j 8 --dropout ${dropout} \
    --snapshot_pref ./models/flow/${prefix} \
-   --sources <path to source optical frame of ucf101> \
+   --sources <path to source optical frame of hmdb51> \
    --resume <path to tsn flow pretrained model> \
    --resume_type tsn --two_steps ${two_steps} \
    --activation softmax \
@@ -95,7 +95,7 @@ python /mnt/lustre/xuyoujiang/action/seqvlad-pytorch/main.py hmdb51 Flow ./data/
 
 ## Testing
 
-After training, there will checkpoints saved by pytorch, for example `ucf101_rgb_split1_checkpoint.pth`.
+After training, there will checkpoints saved by pytorch, for example `hmdb51_rgb_split1_checkpoint.pth`.
 
 Use the following command to test its performance in the standard TSN testing protocol:
 
