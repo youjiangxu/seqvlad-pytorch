@@ -16,7 +16,7 @@ class SeqVLAD(nn.Module):
                  dropout=0.8,
                  activation=None,
                  seqvlad_type='seqvlad',
-                 init_method='xavier_normal',
+                 init_method='xavier_normal',  
                  crop_num=1, partial_bn=True):
 
         super(SeqVLAD, self).__init__()
@@ -28,8 +28,8 @@ class SeqVLAD(nn.Module):
         self.crop_num = crop_num
         self.with_relu = with_relu
         self.seqvlad_type = seqvlad_type
-        self.consensus_type = consensus_type
         self.init_method = init_method
+        self.consensus_type = consensus_type
         if not before_softmax and consensus_type != 'avg':
             raise ValueError("Only avg consensus can be used after Softmax")
 
@@ -99,7 +99,7 @@ SeqVLAD Configurations:
                         BiSeqVLADModule(self.timesteps, self.num_centers, self.redu_dim, self.with_relu, self.activation))
             elif self.seqvlad_type == 'unshare_bidirect':
                  setattr(self.base_model, 'global_pool', 
-                        UnshareBiSeqVLADModule(self.timesteps, self.num_centers, self.redu_dim, self.with_relu, self.activation))
+                        UnshareBiSeqVLADModule(self.timesteps, self.num_centers, self.redu_dim, self.with_relu, self.activation, init_method=self.init_method))
             #self.base_model = model
         
 
@@ -251,13 +251,20 @@ SeqVLAD Configurations:
                 pass
             elif isinstance(m, SeqVLADModule) or isinstance(m, BiSeqVLADModule):
                 print('this is SeqVlad module, and adding the trainable parameters to train')
-                assert len(list(m.parameters())) == 8, "the number parameters of seqvlad should be equal to 8"
                 ps = list(m.parameters())
-                conv_cnt += 5
-                normal_weight.extend(ps[0:5])
-                normal_bias.extend(ps[5::])
-                print('len of weight %d' %(len(ps[0:5])))
-                print('len of bias %d' %(len(ps[5::])))
+                if self.redu_dim < 1024:
+                    #print("...", self.redu_dum)
+                    seq_count = 5
+
+                    assert len(list(m.parameters())) == 8, "the number parameters of seqvlad should be equal to 8"
+                else:
+                    seq_count = 4
+                    assert len(list(m.parameters())) == 6, "the number parameters of seqvlad should be equal to 6"
+                conv_cnt += seq_count
+                normal_weight.extend(ps[0:seq_count])
+                normal_bias.extend(ps[seq_count::])
+                print('len of weight %d' %(len(ps[0:seq_count])))
+                print('len of bias %d' %(len(ps[seq_count::])))
             elif isinstance(m, UnshareBiSeqVLADModule):
                 print('this is unshare SeqVlad module, and adding the trainable parameters to train')
                 assert len(list(m.parameters())) == 13, "the number parameters of seqvlad should be equal to 13"
@@ -321,13 +328,18 @@ SeqVLAD Configurations:
                     bn.extend(list(m.parameters()))
             elif isinstance(m, SeqVLADModule) or isinstance(m, BiSeqVLADModule):
                 print('this is SeqVlad module, and adding the trainable parameters to train')
-                assert len(list(m.parameters())) == 8, "the number parameters of seqvlad should be equal to 8"
                 ps = list(m.parameters())
-                conv_cnt += 5
-                normal_weight.extend(ps[0:5])
-                normal_bias.extend(ps[5::])
-                print('len of weight %d' %(len(ps[0:5])))
-                print('len of bias %d' %(len(ps[5::])))
+                if self.redu_dim < 1024:
+                    seq_count=5
+                    assert len(list(m.parameters())) == 8, "the number parameters of seqvlad should be equal to 8"
+                else:
+                    seq_count=4
+                    assert len(list(m.parameters())) == 6, "the number parameters of seqvlad should be equal to 6"
+                conv_cnt += seq_count
+                normal_weight.extend(ps[0:seq_count])
+                normal_bias.extend(ps[seq_count::])
+                print('len of weight %d' %(len(ps[0:seq_count])))
+                print('len of bias %d' %(len(ps[seq_count::])))
 
             elif isinstance(m, UnshareBiSeqVLADModule):
                 print('this is unshare SeqVlad module, and adding the trainable parameters to train')

@@ -10,16 +10,20 @@ sys.path.insert(0, "/mnt/lustre/share/pymc")
 import mc
 import cv2
 
-class VideoRecord(object):
-    def __init__(self, row):
-        self._data = row
+#np.random.seed(47)
 
+class VideoRecord(object):
+    def __init__(self, row, modality):
+        self._data = row
+        self._modality = modality
     @property
     def path(self):
         return self._data[0]
 
     @property
     def num_frames(self):
+        if self._modality == 'Flow':
+            return int(self._data[1])-1
         return int(self._data[1])
 
     @property
@@ -50,22 +54,26 @@ class TSNDataSet(data.Dataset):
             self.new_length += 1# Diff needs one more image to calculate diff
 
         self._parse_list()
-        self.server_list_config_file = "/mnt/lustre/share/memcached_client/server_list.conf"
-        self.client_config_file = "/mnt/lustre/share/memcached_client/client.conf"
+	#self.server_list_config_file = "/mnt/lustre/share/memcached_client/server_list.conf"
+	self.server_list_config_file = "/mnt/lustre/share/memcached_client/server_list.part"
+	self.client_config_file = "/mnt/lustre/share/memcached_client/client.conf"
+	
 
     def _load_image(self, directory, idx):
+        #print("test....")
+        mclient = mc.MemcachedClient.GetInstance(self.server_list_config_file, self.client_config_file)
+        value = mc.pyvector()
+
         if self.modality == 'RGB' or self.modality == 'RGBDiff':
-            mclient = mc.MemcachedClient.GetInstance(self.server_list_config_file, self.client_config_file)
-            value = mc.pyvector()
             filename = os.path.join(self.root_path, directory, self.image_tmpl.format(idx))
             mclient.Get(filename, value)
             value_str = mc.ConvertString(value)
             img_array = np.fromstring(value_str, np.uint8)
             img = cv2.imdecode(img_array, cv2.CV_LOAD_IMAGE_COLOR)
-            #img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 
-            img = Image.fromarray(img).convert('RGB')
-
+            img = Image.fromarray(img)
+            
             #img2 = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(idx))).convert('RGB')
             #print(np.array(img)-np.array(img2))
             return [img]
@@ -73,10 +81,6 @@ class TSNDataSet(data.Dataset):
         elif self.modality == 'Flow':
             #x_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))).convert('L')
             #y_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('y', idx))).convert('L')
-
-            #return [x_img, y_img]
-            mclient = mc.MemcachedClient.GetInstance(self.server_list_config_file, self.client_config_file)
-            value = mc.pyvector()
             x_img_name = os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))
             mclient.Get(x_img_name, value)
             value_str = mc.ConvertString(value)
@@ -94,7 +98,7 @@ class TSNDataSet(data.Dataset):
             return [x_img, y_img]
 
     def _parse_list(self):
-        self.video_list = [VideoRecord(x.strip().split(' ')) for x in open(self.list_file)]
+        self.video_list = [VideoRecord(x.strip().split(' '), self.modality) for x in open(self.list_file)]
 
     def _sample_indices(self, record):
         """
@@ -110,6 +114,7 @@ class TSNDataSet(data.Dataset):
                 offsets = np.sort(randint(record.num_frames - self.new_length + 1, size=self.timesteps))
             else:
                 offsets = np.zeros((self.timesteps,))
+            #print(offsets) 
             return offsets + 1
         elif self.sampling_method == 'random':
             if record.num_frames > self.timesteps:
@@ -130,15 +135,7 @@ class TSNDataSet(data.Dataset):
             else:
                 offsets = np.zeros((self.timesteps,))
             if self.reverse and np.random.randint(1000) > 500:
-                offsets = offsets[::-1]
-        elif self.sampling_method == 'step':
-            total_frame = 40
-            assert self.timesteps == 10
-            average_duration = (record.num_frames - self.new_length + 1) // total_frame
-            step = np.random.randint(1,5)
-            offsets = np.multiply(list(range(self.timesteps)), step)
-            offsets[np.where(offsets>=record.num_frames)]=(record.num_frames-1)
-            # print(offsets)
+                offset = offsets[::-1]
 
             return offsets + 1
 
@@ -147,21 +144,10 @@ class TSNDataSet(data.Dataset):
 
     def _get_val_indices(self, record):
         if record.num_frames > self.timesteps + self.new_length - 1:
-            if self.sampling_method == 'step':
-                total_frame = 40
-                assert self.timesteps == 10
-                average_duration = (record.num_frames - self.new_length + 1) // total_frame
-                step = np.random.randint(1,5)
-                offsets = np.multiply(list(range(self.timesteps)), step)
-                # print(offsets)
-
-            else:
-
-                tick = (record.num_frames - self.new_length + 1) / float(self.timesteps)
-                offsets = np.array([int(tick / 2.0 + tick * x) for x in range(self.timesteps)])
+            tick = (record.num_frames - self.new_length + 1) / float(self.timesteps)
+            offsets = np.array([int(tick / 2.0 + tick * x) for x in range(self.timesteps)])
         else:
             offsets = np.zeros((self.timesteps,))
-
         return offsets + 1
 
     def _get_test_indices(self, record):
@@ -172,23 +158,12 @@ class TSNDataSet(data.Dataset):
 
             return offsets + 1
         elif self.test_segments == 25:
-            if self.sampling_method == 'step':
-                img_index = []
-                total_frame = 35
-                assert self.timesteps == 10
-                inter_step = (record.num_frames - self.new_length + 1) // total_frame
-                for si in range(self.test_segments):
-                    for i in range(self.timesteps):
-                        img_index.append((si+i)*inter_step)
+            img_index = []
+            inter_step = (record.num_frames - self.new_length - self.test_segments + 1) /float(self.timesteps)
+            for si in range(self.test_segments):
+                for i in range(self.timesteps):
+                    img_index.append(si+i*inter_step)
 
-            else:
-                img_index = []
-                inter_step = (record.num_frames - self.new_length - self.test_segments + 1) /float(self.timesteps)
-                for si in range(self.test_segments):
-                    for i in range(self.timesteps):
-                        img_index.append(si+i*inter_step)
-
-            #print(img_index)
             return np.array(img_index)+1
 
 
@@ -209,6 +184,7 @@ class TSNDataSet(data.Dataset):
             p = int(seg_ind)
             for i in range(self.new_length):
                 seg_imgs = self._load_image(record.path, p)
+                #print(type(seg_imgs[0]))
                 images.extend(seg_imgs)
                 if p < record.num_frames:
                     p += 1

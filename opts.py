@@ -78,7 +78,7 @@ parser.add_argument('--optim', type=str, default="SGD", choices=['SGD', 'Adam'],
 parser.add_argument('--two_steps', default=None, type=int, metavar='N',
                     help='in the first step, we only train')
 
-parser.add_argument('--sampling_method', default='tsn', type=str, choices=['tsn', 'random', 'reverse', 'step'],
+parser.add_argument('--sampling_method', default='tsn', type=str, choices=['tsn', 'random', 'reverse'],
                     help='defint sampling method for training procedure')
 
 parser.add_argument('--reverse', default=False, action='store_true',
@@ -91,6 +91,6 @@ parser.add_argument('--seqvlad_type', default='seqvlad', choices=['seqvlad', 'bi
 parser.add_argument('--lossweight', default=1.0, type=float, metavar='M',
                     help='lossweight')
 
+
 parser.add_argument('--init_method', default='xavier_normal', choices=['xavier_normal', 'orthogonal', 'uniform'],
                     help='set init method for hidden to hidden paramters, e.g., U_z, U_r, and U_h.')
-
