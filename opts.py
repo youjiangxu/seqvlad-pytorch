@@ -92,5 +92,5 @@ parser.add_argument('--lossweight', default=1.0, type=float, metavar='M',
                     help='lossweight')
 
 
-parser.add_argument('--init_method', default='xavier_normal', choices=['xavier_normal', 'orthogonal', 'uniform'],
+parser.add_argument('--init_method', default='orthogonal', choices=['xavier_normal', 'orthogonal', 'uniform'],
                     help='set init method for hidden to hidden paramters, e.g., U_z, U_r, and U_h.')

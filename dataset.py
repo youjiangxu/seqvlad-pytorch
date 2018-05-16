@@ -6,8 +6,8 @@ import os.path
 import numpy as np
 from numpy.random import randint
 import sys
-sys.path.insert(0, "/mnt/lustre/share/pymc")
-import mc
+# sys.path.insert(0, "/mnt/lustre/share/pymc")
+# import mc
 import cv2
 
 #np.random.seed(47)
@@ -65,37 +65,39 @@ class TSNDataSet(data.Dataset):
         value = mc.pyvector()
 
         if self.modality == 'RGB' or self.modality == 'RGBDiff':
-            filename = os.path.join(self.root_path, directory, self.image_tmpl.format(idx))
-            mclient.Get(filename, value)
-            value_str = mc.ConvertString(value)
-            img_array = np.fromstring(value_str, np.uint8)
-            img = cv2.imdecode(img_array, cv2.CV_LOAD_IMAGE_COLOR)
-            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+            # filename = os.path.join(self.root_path, directory, self.image_tmpl.format(idx))
+            # mclient.Get(filename, value)
+            # value_str = mc.ConvertString(value)
+            # img_array = np.fromstring(value_str, np.uint8)
+            # img = cv2.imdecode(img_array, cv2.CV_LOAD_IMAGE_COLOR)
+            # img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 
-            img = Image.fromarray(img)
+            # img = Image.fromarray(img)
             
-            #img2 = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(idx))).convert('RGB')
-            #print(np.array(img)-np.array(img2))
-            return [img]
-            #return [Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(idx))).convert('RGB')]
+            # #img2 = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(idx))).convert('RGB')
+            # #print(np.array(img)-np.array(img2))
+            # return [img]
+            return [Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(idx))).convert('RGB')]
         elif self.modality == 'Flow':
-            #x_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))).convert('L')
-            #y_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('y', idx))).convert('L')
-            x_img_name = os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))
-            mclient.Get(x_img_name, value)
-            value_str = mc.ConvertString(value)
-            img_array = np.fromstring(value_str, np.uint8)
-            x_img = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
-            x_img = Image.fromarray(x_img).convert('L')
-
-            y_img_name = os.path.join(self.root_path, directory, self.image_tmpl.format('y', idx))
-            mclient.Get(y_img_name, value)
-            value_str = mc.ConvertString(value)
-            img_array = np.fromstring(value_str, np.uint8)
-            y_img = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
-            y_img = Image.fromarray(y_img).convert('L')
-
+            x_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))).convert('L')
+            y_img = Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format('y', idx))).convert('L')
             return [x_img, y_img]
+
+            # x_img_name = os.path.join(self.root_path, directory, self.image_tmpl.format('x', idx))
+            # mclient.Get(x_img_name, value)
+            # value_str = mc.ConvertString(value)
+            # img_array = np.fromstring(value_str, np.uint8)
+            # x_img = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
+            # x_img = Image.fromarray(x_img).convert('L')
+
+            # y_img_name = os.path.join(self.root_path, directory, self.image_tmpl.format('y', idx))
+            # mclient.Get(y_img_name, value)
+            # value_str = mc.ConvertString(value)
+            # img_array = np.fromstring(value_str, np.uint8)
+            # y_img = cv2.imdecode(img_array, cv2.IMREAD_UNCHANGED)
+            # y_img = Image.fromarray(y_img).convert('L')
+
+            # return [x_img, y_img]
 
     def _parse_list(self):
         self.video_list = [VideoRecord(x.strip().split(' '), self.modality) for x in open(self.list_file)]
