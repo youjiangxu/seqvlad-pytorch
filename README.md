@@ -2,6 +2,25 @@
 
 *Now in experimental release, suggestions welcome*. 
 
+## Paper
+
+Youjiang Xu, Yahong Han, Richang Hong, Qi Tian. ["Sequential Video VLAD: Training the Aggregation 
+
+Locally and Temporally."]() TIP, 2018. [[Paper\]]()
+
+```
+@inproceedings{Xu2018Sequential,
+  author    = {Youjiang Xu and Yahong Han and Richang Hong and Qi Tian},
+  title     = {Sequential Video VLAD: Training the Aggregation Locally and Temporally},
+  booktitle = {TIP},
+  year      = {2018},
+}
+```
+
+## Framework
+
+![framework](f1.png)
+
 This is an implementation of Sequential VLAD (SeqVLAD) in PyTorch.
 
 **Note**: always use `git clone --recursive https://github.com/youjiangxu/seqvlad-pytorch` to clone this project.
