@@ -1,18 +1,16 @@
 # SeqVLAD-Pytorch
 
-*Now in experimental release, suggestions welcome*. 
+*Now in experimental release, suggestions welcome*.
 
 ## Paper
 
-Youjiang Xu, Yahong Han, Richang Hong, Qi Tian. ["Sequential Video VLAD: Training the Aggregation 
-
-Locally and Temporally."]() TIP, 2018. [[Paper\]]()
+Youjiang Xu, Yahong Han, Richang Hong, Qi Tian. ["Sequential Video VLAD: Training the Aggregation Locally and Temporally."]() IEEE TIP, 2018, DOI:10.1109/TIP.2018.2846664. [[Paper\]]()
 
 ```
 @inproceedings{Xu2018Sequential,
   author    = {Youjiang Xu and Yahong Han and Richang Hong and Qi Tian},
   title     = {Sequential Video VLAD: Training the Aggregation Locally and Temporally},
-  booktitle = {TIP},
+  booktitle = {IEEE TIP},
   year      = {2018},
 }
 ```
@@ -35,7 +33,7 @@ The split files in ``` ./data/hmdb51_splits/```  are provided by [ActionVLAD](ht
 
 To train a new model, we can use the `main.py` script.
 
-We can utilize the following ``` bash``` script to train the SeqVLAD with RGB inputs on the split 1 of HMDB51 : 
+We can utilize the following ``` bash``` script to train the SeqVLAD with RGB inputs on the split 1 of HMDB51 :
 
 ```bash
 split=1
