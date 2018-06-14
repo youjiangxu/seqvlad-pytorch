@@ -4,7 +4,7 @@
 
 ## Paper
 
-Youjiang Xu, Yahong Han, Richang Hong, Qi Tian. ["Sequential Video VLAD: Training the Aggregation Locally and Temporally."]() IEEE TIP, 2018, DOI:10.1109/TIP.2018.2846664. [[Paper\]]()
+Youjiang Xu, Yahong Han, Richang Hong, Qi Tian. ["Sequential Video VLAD: Training the Aggregation Locally and Temporally."](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8382330) IEEE TIP, 2018, DOI:10.1109/TIP.2018.2846664. [[Paper\]](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8382330)
 
 ```
 @inproceedings{Xu2018Sequential,
@@ -145,9 +145,6 @@ python test_models.py hmdb51 Flow ./data/hmdb51_splits/test_split${split}.txt \
        --flow_pref flow_
 ```
 
-**Note**: We first build our SeqVLAD on the repository of [old-seqvlad-pytorch](https://github.com/youjiangxu/tsn-pytorch/tree/seqvlad), which is folked from [tsn-pytorch](https://github.com/yjxiong/tsn-pytorch). And in order to reproduct our method easily, we release the source code in this repository [SeqVLAD-Pytorch](https://github.com/youjiangxu/seqvlad-pytorch).
-
-
 
 ## Quick Fusion
 
@@ -157,7 +154,7 @@ If you're only looking for our final last-layer features that can be combined wi
 ./logits/hmdb51/
 ```
 
-For example, you can use following command to merge two modality results (e.g., RGB+Flow) and obtain the final accuracy on HMDB51 split1.
+For example, you can use the following command to merge two modality results (e.g., RGB+Flow) and obtain the final accuracy on HMDB51 split1.
 
 ```bash
 python ./merge_hmdb.py --rgb ./logits/hmdb51/hmdb51_rgb_split1.npz --flow ./logits/hmdb51/hmdb51_flow_split1.npz
@@ -176,6 +173,9 @@ The performance (accuracy) of the seqvlad on HMDB51 is as follows:
 
 ### UCF101 -TODO
 
+
+
+**Note**: We first build our SeqVLAD on the repository of [old-seqvlad-pytorch](https://github.com/youjiangxu/tsn-pytorch/tree/seqvlad), which is folked from [tsn-pytorch](https://github.com/yjxiong/tsn-pytorch). And in order to reproduct our method easily, we release the source code in this repository [SeqVLAD-Pytorch](https://github.com/youjiangxu/seqvlad-pytorch).
 
 
 ### Useful Links
