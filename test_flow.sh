@@ -2,7 +2,7 @@
 
 
 split=1
-srun --mpi=pmi2 --gres=gpu:1 -n1 -p SenseMediaA --job-name=test python test_models.py ucf101 Flow ./data/ucf101_splits/flow/test_split${split}.txt \
+python test_models.py ucf101 Flow ./data/ucf101_splits/flow/test_split${split}.txt \
     models/flow/ucf101_split1_t25_lr0.01_d0.7_e120210250280_f150_softmax_flow_model_best.pth.tar \
     --arch BNInception \
     --save_scores results/flow/seqvlad_split${split}_d0.7_t25_e120210250280_f120_lr0.01_s1 \
