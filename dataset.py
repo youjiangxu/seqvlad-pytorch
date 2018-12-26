@@ -61,8 +61,8 @@ class TSNDataSet(data.Dataset):
 
     def _load_image(self, directory, idx):
         #print("test....")
-        mclient = mc.MemcachedClient.GetInstance(self.server_list_config_file, self.client_config_file)
-        value = mc.pyvector()
+        #mclient = mc.MemcachedClient.GetInstance(self.server_list_config_file, self.client_config_file)
+        #value = mc.pyvector()
 
         if self.modality == 'RGB' or self.modality == 'RGBDiff':
             # filename = os.path.join(self.root_path, directory, self.image_tmpl.format(idx))
