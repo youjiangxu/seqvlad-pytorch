@@ -95,11 +95,10 @@ def compute_acc(rgb_score, flow_score, labels):
 
         final_pred = np.asarray(rgb)*args.weight[0] + np.asarray(flow)*args.weight[1]
         if args.idt is not None:
-	    idt = idt_map[rename2ori[test_names[idx]]]
-
-            final_pred = (1-args.idt_wt) * (
-                        final_pred / np.linalg.norm(final_pred, axis=0, keepdims=True)) + args.idt_wt * (
-                        idt / np.linalg.norm(idt, axis=0, keepdims=True))
+          idt = idt_map[rename2ori[test_names[idx]]]
+          final_pred = (1-args.idt_wt) * (
+                      final_pred / np.linalg.norm(final_pred, axis=0, keepdims=True)) + args.idt_wt * (
+                      idt / np.linalg.norm(idt, axis=0, keepdims=True))
 
         acc += 1 if np.argmax(final_pred) == label else 0
 
